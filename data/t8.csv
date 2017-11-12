@@ -1,0 +1,109 @@
+Series ID,"Annual2016",age,activity
+TUU10101AA01008829,9.58,15 years and over,Personal care activities
+TUU10101AA01013237,1.17,15 years and over,Eating and drinking
+TUU10101AA01009381,1.82,15 years and over,Household activities
+TUU10101AA01012652,0.76,15 years and over,Purchasing goods and services
+TUU10101AA01010374,0.52,15 years and over,Caring for and helping household members
+TUU10101AA01011174,0.21,15 years and over,Caring for and helping nonhousehold members
+TUU10101AA01011987,3.61,15 years and over,Working and work-related activities
+TUU10101AA01012335,0.49,15 years and over,Educational activities
+TUU10101AA01015010,0.32,15 years and over,"Organizational, civic, and religious activities"
+TUU10101AA01013585,5.13,15 years and over,Leisure and sports
+TUU10101AA01015586,0.16,15 years and over,"Telephone calls, mail, and e-mail"
+TUU10101AA01015925,0.22,15 years and over,"Other activities, not elsewhere classified"
+TUU10101AA01008943,10.55,15 to 19 years,Personal care activities
+TUU10101AA01013351,1.02,15 to 19 years,Eating and drinking
+TUU10101AA01009495,0.68,15 to 19 years,Household activities
+TUU10101AA01012766,0.45,15 to 19 years,Purchasing goods and services
+TUU10101AA01010485,0.14,15 to 19 years,Caring for and helping household members
+TUU10101AA01011285,0.23,15 to 19 years,Caring for and helping nonhousehold members
+TUU10101AA01012101,1.15,15 to 19 years,Working and work-related activities
+TUU10101AA01012441,3.9,15 to 19 years,Educational activities
+TUU10101AA01015121,0.23,15 to 19 years,"Organizational, civic, and religious activities"
+TUU10101AA01013705,5.2,15 to 19 years,Leisure and sports
+TUU10101AA01015697,0.21,15 to 19 years,"Telephone calls, mail, and e-mail"
+TUU10101AA01016036,0.25,15 to 19 years,"Other activities, not elsewhere classified"
+TUU10101AA01008889,10.15,20 to 24 years,Personal care activities
+TUU10101AA01013297,1,20 to 24 years,Eating and drinking
+TUU10101AA01009441,1.13,20 to 24 years,Household activities
+TUU10101AA01012712,0.64,20 to 24 years,Purchasing goods and services
+TUU10101AA01010431,0.33,20 to 24 years,Caring for and helping household members
+TUU10101AA01011231,0.16,20 to 24 years,Caring for and helping nonhousehold members
+TUU10101AA01012047,4.2,20 to 24 years,Working and work-related activities
+TUU10101AA01012392,0.99,20 to 24 years,Educational activities
+TUU10101AA01015067,0.14,20 to 24 years,"Organizational, civic, and religious activities"
+TUU10101AA01013651,4.8,20 to 24 years,Leisure and sports
+TUU10101AA01015643,0.12,20 to 24 years,"Telephone calls, mail, and e-mail"
+TUU10101AA01015982,,20 to 24 years,"Other activities, not elsewhere classified"
+TUU10101AA01008894,9.51,25 to 34 years,Personal care activities
+TUU10101AA01013302,1.24,25 to 34 years,Eating and drinking
+TUU10101AA01009446,1.57,25 to 34 years,Household activities
+TUU10101AA01012717,0.69,25 to 34 years,Purchasing goods and services
+TUU10101AA01010436,1.02,25 to 34 years,Caring for and helping household members
+TUU10101AA01011236,0.12,25 to 34 years,Caring for and helping nonhousehold members
+TUU10101AA01012052,4.88,25 to 34 years,Working and work-related activities
+TUU10101AA01012397,0.31,25 to 34 years,Educational activities
+TUU10101AA01015072,0.21,25 to 34 years,"Organizational, civic, and religious activities"
+TUU10101AA01013656,4.13,25 to 34 years,Leisure and sports
+TUU10101AA01015648,0.12,25 to 34 years,"Telephone calls, mail, and e-mail"
+TUU10101AA01015987,0.2,25 to 34 years,"Other activities, not elsewhere classified"
+TUU10101AA01008910,9.23,35 to 44 years,Personal care activities
+TUU10101AA01013318,1.15,35 to 44 years,Eating and drinking
+TUU10101AA01009462,1.9,35 to 44 years,Household activities
+TUU10101AA01012733,0.71,35 to 44 years,Purchasing goods and services
+TUU10101AA01010452,1.16,35 to 44 years,Caring for and helping household members
+TUU10101AA01011252,0.14,35 to 44 years,Caring for and helping nonhousehold members
+TUU10101AA01012068,5.07,35 to 44 years,Working and work-related activities
+TUU10101AA01012413,0.1,35 to 44 years,Educational activities
+TUU10101AA01015088,0.28,35 to 44 years,"Organizational, civic, and religious activities"
+TUU10101AA01013672,3.97,35 to 44 years,Leisure and sports
+TUU10101AA01015664,0.12,35 to 44 years,"Telephone calls, mail, and e-mail"
+TUU10101AA01016003,0.17,35 to 44 years,"Other activities, not elsewhere classified"
+TUU10101AA01008911,9.23,45 to 54 years,Personal care activities
+TUU10101AA01013319,1.11,45 to 54 years,Eating and drinking
+TUU10101AA01009463,1.97,45 to 54 years,Household activities
+TUU10101AA01012734,0.82,45 to 54 years,Purchasing goods and services
+TUU10101AA01010453,0.52,45 to 54 years,Caring for and helping household members
+TUU10101AA01011253,0.17,45 to 54 years,Caring for and helping nonhousehold members
+TUU10101AA01012069,4.81,45 to 54 years,Working and work-related activities
+TUU10101AA01012414,0.08,45 to 54 years,Educational activities
+TUU10101AA01015089,0.34,45 to 54 years,"Organizational, civic, and religious activities"
+TUU10101AA01013673,4.59,45 to 54 years,Leisure and sports
+TUU10101AA01015665,0.14,45 to 54 years,"Telephone calls, mail, and e-mail"
+TUU10101AA01016004,0.22,45 to 54 years,"Other activities, not elsewhere classified"
+TUU10101AA01008927,9.35,55 to 64 years,Personal care activities
+TUU10101AA01013335,1.19,55 to 64 years,Eating and drinking
+TUU10101AA01009479,2.05,55 to 64 years,Household activities
+TUU10101AA01012750,0.86,55 to 64 years,Purchasing goods and services
+TUU10101AA01010469,0.13,55 to 64 years,Caring for and helping household members
+TUU10101AA01011269,0.36,55 to 64 years,Caring for and helping nonhousehold members
+TUU10101AA01012085,3.69,55 to 64 years,Working and work-related activities
+TUU10101AA01012430,0.03,55 to 64 years,Educational activities
+TUU10101AA01015105,0.41,55 to 64 years,"Organizational, civic, and religious activities"
+TUU10101AA01013689,5.57,55 to 64 years,Leisure and sports
+TUU10101AA01015681,0.18,55 to 64 years,"Telephone calls, mail, and e-mail"
+TUU10101AA01016020,0.18,55 to 64 years,"Other activities, not elsewhere classified"
+TUU10101AA01030695,9.52,65 to 74 years,Personal care activities
+TUU10101AA01030851,1.26,65 to 74 years,Eating and drinking
+TUU10101AA01030728,2.56,65 to 74 years,Household activities
+TUU10101AA01030818,0.96,65 to 74 years,Purchasing goods and services
+TUU10101AA01030754,0.13,65 to 74 years,Caring for and helping household members
+TUU10101AA01030760,0.37,65 to 74 years,Caring for and helping nonhousehold members
+TUU10101AA01030777,1.31,65 to 74 years,Working and work-related activities
+TUU10101AA01030801,0.02,65 to 74 years,Educational activities
+TUU10101AA01030946,0.48,65 to 74 years,"Organizational, civic, and religious activities"
+TUU10101AA01030890,6.92,65 to 74 years,Leisure and sports
+TUU10101AA01030954,0.21,65 to 74 years,"Telephone calls, mail, and e-mail"
+TUU10101AA01030960,0.25,65 to 74 years,"Other activities, not elsewhere classified"
+TUU10101AA01030694,10.07,75 years and over,Personal care activities
+TUU10101AA01030850,1.39,75 years and over,Eating and drinking
+TUU10101AA01030727,2.35,75 years and over,Household activities
+TUU10101AA01030817,0.86,75 years and over,Purchasing goods and services
+TUU10101AA01030753,0.14,75 years and over,Caring for and helping household members
+TUU10101AA01030759,0.17,75 years and over,Caring for and helping nonhousehold members
+TUU10101AA01030776,0.35,75 years and over,Working and work-related activities
+TUU10101AA01030800,,75 years and over,Educational activities
+TUU10101AA01030945,0.52,75 years and over,"Organizational, civic, and religious activities"
+TUU10101AA01030885,7.6,75 years and over,Leisure and sports
+TUU10101AA01030953,0.26,75 years and over,"Telephone calls, mail, and e-mail"
+TUU10101AA01030959,0.31,75 years and over,"Other activities, not elsewhere classified"
