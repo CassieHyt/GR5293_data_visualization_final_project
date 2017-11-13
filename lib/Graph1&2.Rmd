@@ -1,0 +1,148 @@
+---
+title: "planB"
+author: "Zixuan Guan"
+date: "November 12, 2017"
+output: html_document
+---
+## Graph 1 ##
+```{r}
+setwd("~/Desktop/Columbia/3rd/GR5293 Graphic/proj/planB/GR5293_data_visualization_final_project-master/data")
+
+```
+
+```{r}
+# Read in and clean table 3
+t3<-read.csv("t3_processed.csv",header = T,as.is = T)
+```
+
+```{r}
+#head(t3)
+colnames(t3)<-c("activities","subactivities","12am","1am","2am","3am","4am","5am","6am","7am","8am","9am","10am","11am","12pm","1pm","2pm","3pm","4pm","5pm","6pm","7pm","8pm","9pm","10pm","11pm")
+t3_1<-t3
+#str(t3_1)
+#sum(t3_1 == "(2)-")
+
+t3_1$`12am`[t3_1$`12am` == "(2)-"]<-"0"
+t3_1$`1am`[t3_1$`1am` == "(2)-"]<-"0"
+t3_1$`2am`[t3_1$`2am` == "(2)-"]<-"0"
+t3_1$`3am`[t3_1$`3am` == "(2)-"]<-"0"
+t3_1$`4am`[t3_1$`4am` == "(2)-"]<-"0" 
+t3_1$`5am`[t3_1$`5am` == "(2)-"]<-"0"
+t3_1$`6am`[t3_1$`6am` == "(2)-"]<-"0"
+t3_1$`9pm`[t3_1$`9pm` == "(2)-"]<-"0"
+t3_1$`10pm`[t3_1$`10pm` == "(2)-"]<-"0" 
+t3_1$`11pm`[t3_1$`11pm` == "(2)-"]<-"0"
+#str(t3_1)
+#sum(t3_1 == "(2)-")
+
+t3_1$`12am`<-as.numeric(t3_1$`12am`)
+t3_1$`1am`<-as.numeric(t3_1$`1am`)
+t3_1$`2am`<-as.numeric(t3_1$`2am`)
+t3_1$`3am`<-as.numeric(t3_1$`3am`)
+t3_1$`4am`<-as.numeric(t3_1$`4am`)
+t3_1$`5am`<-as.numeric(t3_1$`5am`)
+t3_1$`6am`<-as.numeric(t3_1$`6am`)
+t3_1$`9pm`<-as.numeric(t3_1$`9pm`)
+t3_1$`10pm`<-as.numeric(t3_1$`10pm`)
+t3_1$`11pm`<-as.numeric(t3_1$`11pm`)
+#str(t3_1)
+
+
+t3_sub<-t3_1[t3_1$subactivities == '',]
+t3_sub_withoutrow <- t3_sub[colnames(t3_sub[,c(1,3:26)])]
+#head(t3_sub)
+names<-t3_sub[,1]
+t3_sub<-t3_sub[colnames(t3_sub[,3:26])]
+rownames(t3_sub)<-names
+#head(t3_sub)
+
+t3_sub_withoutrow2 <- t3_sub_withoutrow
+t3_sub_withoutrow2[colnames(t3_sub_withoutrow[,2:25])]<-t3_sub_withoutrow[colnames(t3_sub_withoutrow[,2:25])]
+#t3_sub_withoutrow2
+```
+
+```{r}
+library(ggplot2)
+library(reshape)
+library(scales)
+library(plyr)
+require("RColorBrewer")
+t3_sub_withoutrow2.m<-melt(t3_sub_withoutrow2)
+t3_sub_withoutrow2.m<-ddply(t3_sub_withoutrow2.m, .(variable), transform, rescale = rescale(value))
+
+p <- ggplot(t3_sub_withoutrow2.m, aes(variable, activities)) + 
+  geom_tile(aes(fill = rescale), colour = brewer.pal(9, "Blues")[2]) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5))+
+  scale_fill_gradient(low = brewer.pal(9, "Blues")[2],high = brewer.pal(9, "Blues")[6])
+p
+
+```
+
+
+
+
+## Graph 2 ##
+```{r}
+# read and clean table 9
+t9<-read.csv("t9.csv",header = F,as.is = T)
+t9<-t9[-c(1,2,3),-1]
+colnames(t9)<-t9[1,]
+t9<-t9[-1,]
+colnames(t9)<-c("Annual","Education","Activity")
+
+# mutiple bar plot
+
+ggplot(t9, aes(factor(Activity), Annual, fill = Education)) + 
+  geom_bar(stat="identity", position = "dodge") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5))+
+  labs(title="Different activites annual hours separate by education",
+        x ="Activities", y = "Annual hours")
+```
+
+
+```{r}
+# read and clean table 8
+t8<-read.csv("t8.csv",header = T,as.is = T)
+t8<-t8[,-1]
+colnames(t8)<-c("Annual","Age","Activity")
+t8[is.na(t8)] <- 0
+
+# mutiple bar plot
+
+ggplot(t8, aes(factor(Activity), Annual, fill = Age)) + 
+  geom_bar(stat="identity", position = "dodge") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5))+
+  labs(title="Different activites annual hours separate by age range",
+        x ="Activities", y = "Annual hours")
+```
+
+
+```{r}
+# read and clean table 6
+t6_1 <- read.csv("t6_processed_1.csv",header=T,as.is=T)
+t6_1<-t6_1[1:25,]
+t6_1<-t6_1[nchar(t6_1$Activity_sub)==0,]
+t6_1<-t6_1[,c(1,3,5,6,7)]
+colnames(t6_1)<-c("Activity","Mother with full time job","Mother no job",
+                  "Father with full time job", "Father no job")
+t6_1.m<-melt(t6_1)
+ggplot(t6_1.m, aes(factor(Activity), value, fill = variable)) + 
+  geom_bar(stat="identity", position = "dodge") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5))+
+  labs(title="Different activites average hours separate by job types and sex in a family",
+        x ="Activities", y = "Annual hours")
+```
+
+```{r}
+# read and clean table 1
+t1<- read.csv("t1_processed.csv",header=T,as.is=T)
+t1<-t1[nchar(t1$Activity_sub)==0,]
+t1<-t1[,c(1,7,8)]
+t1.m<-melt(t1,id="Activity")
+ggplot(t1.m, aes(factor(Activity), value, fill = variable)) + 
+  geom_bar(stat="identity", position = "dodge") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5))+
+  labs(title="Different activites average hours separate by sex",
+        x ="Activities", y = "Average hours")
+```
+
