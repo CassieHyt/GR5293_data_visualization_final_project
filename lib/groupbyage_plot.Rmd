@@ -1,0 +1,62 @@
+---
+title: "groupby_plot"
+author: "Yitong Hu  (yh2875)"
+date: "2017/11/14"
+output: html_document
+---
+```{r}
+library(ggplot2)
+library(scales)
+library(RColorBrewer)
+```
+
+
+For different age group, we no longer use stack or dodge to demonstrate the subgroup, since the number of subgroup is quite large, it's not the best insight for data visualization.We try treating the different time group as a time series through our life 
+```{r}
+# read and clean table 8
+t8<-read.csv("../data/t8.csv",header = T,as.is = T)
+t8<-t8[,-1]
+colnames(t8)<-c("Annual","Age","Activity")
+t8[is.na(t8)] <- 0
+t8_sub<-t8[t8$Age != "15 years and over",]
+t8_sub$Activity[t8_sub$Activity == 'Other activities, not elsewhere classified'] <- "Other activities"
+```
+
+## mark order
+```{r}
+## get the order for age
+t8_sub$order <- rep(seq(1:8),each = 12) # 8*12
+## get the order for activity (almost from larger time spent to smallest, with "others" at one end)
+order<- rep(c(1,10,7,2,3,4,6,9,11,5,8,12),8) + rep((seq(1:8)-1)*12,each = 12)
+t8_sub_2<-t8_sub[order,]
+order1<-rep(seq(1:12),8)+9
+
+for (i in 1:nrow(t8_sub_2))
+{
+  t8_sub_2$Activity2[i] <- paste0(order1[i],as.character(t8_sub_2$Activity[i]))
+}
+```
+
+```{r,message = F,warning=F}
+## draw plot
+p<-ggplot(t8_sub_2,aes(order,Annual,colour=Activity2))+
+  #geom_line()+
+  geom_point()+
+  geom_smooth(size=0.5, span=1, se=F,method = "loess") + 
+  scale_x_continuous(breaks = seq(1:8),labels = unique(t8_sub_2$Age)) +
+  labs(title="Time spent proportion for different activites in a day group by age",x="age",y="time spent in a day (hours)")
+
+## adjust filling color an legend
+newpalette<-colorRampPalette(rev(c("lightgrey","#adadad","#a18376","#ee8f71","#67000D","#7c260b","#76c0c1","#00887d","#01a2d9","#7ad2f6","#6794a7","#014d64")))(12)
+
+p + theme_bw() + 
+  scale_colour_manual(values = newpalette,
+                      name = "Activity",
+                      breaks=t8_sub_2$Activity2[1:13],
+                      labels=t8_sub_2$Activity[1:13]) +
+  theme(panel.grid=element_blank(),panel.border=element_blank(),axis.line=element_line(size=0.4,colour="black"),axis.text.x = element_text(angle = 30, hjust = 0.5, vjust = 0.5))
+```
+
+
+
+

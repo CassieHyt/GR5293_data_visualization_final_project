@@ -1,0 +1,98 @@
+---
+title: "groupby_plot"
+author: "Yitong Hu  (yh2875)"
+date: "2017/11/14"
+output: html_document
+---
+
+
+```{r}
+library(reshape2)
+### for sex group
+
+### data preprocessing
+t1<- read.csv("../data/t1_processed.csv",header=T,as.is=T)
+t1<-t1[nchar(t1$Activity_sub)==0,]
+t1<-t1[,c(1,7,8)]
+t1$men<-as.numeric(t1$Men_avg_hour)
+t1$women<-as.numeric(t1$Women_avg_hour)
+t1<-t1[,c(1,4,5)]
+t1.m<-melt(t1,id="Activity")
+#unique(t1.m$Activity)
+t1_sub <- t1.m
+#t1_sub$Activity[t1_sub$Activity == 'Caring for and helping household members' | t1_sub$Activity == 'Caring for and helping household adults'|t1_sub$Activity == 'Caring for and helping nonhousehold members'] <- "Caring for and helping members"
+t1_sub$Activity[t1_sub$Activity == 'Other activities, not elsewhere classified'] <- "Other activities"
+#unique(t1_sub$Activity)
+```
+
+
+We do not want to draw the bar plot with variables level alphabetically, but want to reorder the levels of variable.We want to order the activities by value of time,that is from most time-consuming activity to least, but let the "Other activities" to be at one side.
+```{r}
+order <- c(1,8,9,11,10,3,7,5,4,2,12,6,13,
+           1+13,8+13,9+13,11+13,10+13,3+13,7+13,5+13,4+13,2+13,12+13,6+13,13+13)
+t1_sub_2<-t1_sub[order,]
+for (i in 1:nrow(t1_sub))
+{
+  if (i<14)
+  {t1_sub_2$Activity2[i] <- paste0(33-i-10,as.character(t1_sub_2$Activity[i]))}
+  else t1_sub_2$Activity2[i] <- paste0(33-i+13-10,as.character(t1_sub_2$Activity[i]))
+}
+```
+
+
+```{r fig.width = 8, fig.height = 5,warning=F}
+## draw plot
+
+p1<-ggplot(t1_sub_2, aes(Activity2, value, fill = variable)) + 
+      geom_bar(stat="identity", position = "dodge") +
+      labs(title="Different activites average hours separate by sex",x ="Activities", y = "Average hours")+
+      scale_x_discrete(expand = c(0,0),
+                      breaks=t1_sub_2$Activity2[1:13],
+                      labels=t1_sub_2$Activity[1:13]) + 
+      scale_y_continuous(expand = c(0,0))+
+      coord_flip() 
+
+## adjust filling color an legend
+
+newpalette<-colorRampPalette(c("#014d64","#6794a7"))(2)
+p1 + scale_fill_manual(values=newpalette,
+                      name = "Sex") +
+   theme_bw() + 
+  theme(panel.grid=element_blank(),panel.border=element_blank(),axis.line=element_line(size=1,colour="black"))
+```
+
+```{r,warning=F}
+## draw plot
+
+p2<-ggplot(t1_sub_2,aes(variable,value))+
+  geom_bar(aes(fill=Activity2),
+           stat = "identity",
+           position="fill",width=0.8)+
+           labs(title="Time spent proportion for different activites in a day group by sex",x="sex",y="proportion of time spent in a day") +
+    scale_y_continuous(expand = c(0,0))
+     
+           
+
+## adjust filling color an legend
+
+newpalette<-colorRampPalette(c("lightgrey","#adadad","#a18376","#ee8f71","#EF3B2C","#67000D","#7c260b","#76c0c1","#00887d","#01a2d9","#7ad2f6","#6794a7","#014d64"))(13)
+p2<-p2 + scale_fill_manual(values=newpalette,
+                      name = "Activity",
+                      breaks=t1_sub_2$Activity2[1:13],
+                      labels=t1_sub_2$Activity[1:13])
+p2 +
+  theme_bw() + 
+  theme(panel.grid=element_blank(),panel.border=element_blank(),axis.line=element_line(size=0.4,colour="black"))
+
+```
+
+```{r fig.width = 15, fig.height = 12,warning=F}
+#grid.arrange(p2, p1, nrow=1, ncol=2)
+```
+
+men more: leisure,working,
+woman : personal care,caring for and helping household members
+
+
+we can see more clearly how many hours are the differences from the bar plot. 
+
