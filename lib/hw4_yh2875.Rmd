@@ -1,0 +1,261 @@
+---
+title: "hw4_yh2875"
+author: "Yitong Hu  (yh2875)"
+date: "2017/11/13"
+output: html_document
+---
+
+Data & package preparation
+
+If there is an error when knitting this Rmd file,please run the first trunk and then re-knit.Thanks.
+
+```{r,warning=FALSE,message=F}
+packages.used=c("knitr","reshape2","tidyverse","viridis")
+# check packages that need to be installed.
+packages.needed=setdiff(packages.used, 
+                        intersect(installed.packages()[,1], 
+                                  packages.used))
+# install additional packages
+if(length(packages.needed)>0){
+  install.packages(packages.needed, dependencies = TRUE)
+}
+
+library(knitr)
+library(reshape2)
+library(tidyverse)
+library(viridis)
+```
+
+
+### Chapter 9: Graphics and Data Quality: How Good are the Data?
+
+(First, sorry about that, our group changed data due to some web scrape issues. Our original idea is to collect data from rateyourmusic.com, but our IPs are frequently be blocked every hundreds running although we tried sys.sleep() and tried to collect every day for a little bit. Another thing is that some important data we need for our analysis can not find, like each users rating for every song, the data appearing in the website seems to be a image and we can not get it directly through web scrape. We planned our own timeline, and consider we have spent to much time collecting data, we decide to change data and use our plan B. But we learned a lot through this process! I will mention some if allowed in the final project about what I learned about collecting data and some general tips get,like consider clearly about the data practical applicability. Just sorry for the inconvenience our group brought to u due to our data changing.)
+
+#### Question 1
+
+Our data are from https://www.bls.gov/tus/home.htm. It's a database called American Time Use Survey (ATUS) measuring the amount of time American people spend doing various activities, such as paid work, childcare, volunteering, and socializing. It's been collected originally from a survey.
+
+We choosed and collected 10 tables(t1-t10), here is what our original data:  
+https://github.com/CassieHyt/GR5293_data_visualization_final_project/tree/master/data
+
+Here is what 10 tables about:
+
+```{r,echo=F}
+compare_df <- data.frame(Table=c("Table1","Table2","Table3","Table4","Table5","Table6","Table7","Table8","Table9","Table10","Table11"),Title=c('Time spent and time percent of the people engaging in primary activity category, averages per day by sex','Time spent and time percent of the people engaging in primary activity category, averages per day by sex on weekdays and weekends','Percent of the population engaging in selected activities by time of day, 12 AM to 11 AM','Percent of employed persons working on their main job on days they worked by occupation and hour of day, 12 AM to 11 AM','Percent of employed persons working on their main job on days they worked by industry and hour of day, 12 AM to 11 AM','Time spent in primary activities and the percent of married mothers and fathers who did the activities on an average','Time spent in primary activities by married mothers and fathers by employment status of self and spouse','Time spent and time percent of the people engaging in primary activity category, averages per day by age','Time spent and time percent of the people engaging in primary activity category, averages per day by education level','Time spent and time percent of the people engaging in primary activity changing by time','Time spent and time percent of the people engaging in primary activity changing by time with time unit quarter'))
+kable(compare_df,caption="",digits = 2)
+```
+
+#### 1a) 
+
+The missing patterns I observed in our data:   
+
+In the eleven tables, the missing pattern is not "all or nothing", there is just several missing in certain rows and columns in the each table. More specifically, notation '(2)' in certain position means the data there is missing,it is suppressed because it does not meet the American Time Use Survey publication standards, notation '-1' just means Not applicable.  
+
+We can see more clearly from the following plot.Take table "t5" as an example,since there is some notable feature for this table.
+
+```{r}
+## data preprocessing
+
+t5<-read.csv("t5_processed.csv",as.is = T)
+rownames(t5)<-t5[,1]
+t5<-t5[,2:ncol(t5)]
+#head(t5)
+
+tidyt5 <- t5 %>% 
+    rownames_to_column("id") %>% 
+    gather(key, value, -id) %>% 
+    mutate(missing = ifelse(value == -1, "yes", "no"))
+#tidyt5 
+
+## we need to create a new column denoting the right sequence from 1:00 to 24:00
+tidyt5$seq<-NULL
+tidyt5$key2<-NULL
+for (i in 1:nrow(tidyt5) )
+{
+temp <- tidyt5$key[i]
+ampm <- substr(temp,nchar(temp)-1,9)
+tidyt5$seq[i] <- ifelse(ampm == "AM",as.numeric(substr(temp,2,3)),as.numeric(substr(temp,2,3))+12)
+tidyt5$key2[i] <- substr(temp,2,100)
+} 
+tidyt5$seq[tidyt5$key == 'X12.00.AM']<- 24
+tidyt5$seq[tidyt5$key == 'X12.00.PM']<- 12
+#tidyt5
+```
+
+```{r fig.width = 8, fig.height = 5}
+ggplot(tidyt5, aes(x = seq, y = id, fill = missing)) +
+  geom_tile(color = "white") + 
+  scale_fill_viridis(discrete = TRUE) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5))+  
+  scale_x_continuous(breaks=tidyt5$seq,labels=tidyt5$key2)+
+  labs(title="The missing data pattern for time spent for the people with different occupation over time",x ="Time", y = "Activities")
+```
+
+#### 1b) 
+
+The table here I choose to analyze is about Percent of employed persons working on their main job on days they worked by occupation and hour of day. Like for the number on first row and first column, it means that for the people working on field like Agriculture, forestry, fishing, and hunting,there are 2.4 percents people are still working at 12am. My data is reshaped in some ways, but it exists some pattern for the missing data. 
+
+According to the table, the missing patterns has something to do with the certain occupation(the 'id' column), like only for some certain occupation,here is mining, there are some data missing. Furthermore, I guess it may related to some variables behind the occupation, like the rarity of that occupation. Since the occupation like mining is quite rare, there are not enough people working on mining field accepted the survey, so the sample size is too small to reach a significant level, so it's just marked as missing.
+
+
+
+
+#### 1c)
+
+First, my solution for dealing with the missing data for the situation above is just discarding the mining row. Since it missed not so frequently,just for occupation mining, and it missed about 1/3 of the columns. It's not a very familiar occupation to me and there are 9 other occupations that I'm more interested in and can analyze, so I would rather discard this row.
+
+So the impact would be the occupation partition system is kind of incomplete. So the comparison we can do is relatively comparing between 2 occupations or among several, the occupation option called 'Other services' is actually not accurate, it's not all the occupation other than the ones we list, since we discard 'mining' and it's not included in "Other services". Here is what we need to be cautious of.
+
+
+### Chapter 11 Graphics for Time Series
+
+#### Question 2
+
+
+There is a time series data in my final project dataset. It's about time spent of the people engaging in different activities changing by time, from 2006 to 2016, the time unit is quarter(like 2016-3 denotes 2016 spring, 2016-6 denotes 2016 summer).
+
+```{r,message=F,warning=F}
+## data preprocessing
+
+t11<-read.csv("t11_processed.csv",as.is = T)
+t11_2<-melt(t11)
+t11_2$quarter <- as.numeric(substr(t11_2$variable,4,4))
+t11_2$variable<-paste(substr(t11_2$variable,6,100),t11_2$quarter * 3,10,sep = "-")
+df<-as.data.frame(t11_2)
+df$variable<-as.Date(df$variable,format = "%Y-%m-%d")
+colnames(df)<-c("activities","variable","value","quarter")
+head(df)
+```
+
+#### 2a)
+
+```{r fig.width = 10, fig.height = 5}
+ggplot(df, aes(variable, value, color = activities)) + 
+  geom_line() +
+  xlab("Time") + 
+  ylab("hours") + 
+  ggtitle("Time spent of the people engaging in different activityies per day over time")
+```
+
+For my dataset, the sum at certain time(x axis) is sum to 24 hours(since the data is the time spent for each activity,so the time spent for all the activities in one day is just 24 hours),so overall trend is supposed to be stable, and it looks quite right in the plot.
+
+Specifically speaking:   
+
+* As time passing from 10 years ago till now, time spent in different activities changing little, time-consuming activities is still time consuming while one-hour activities still takes about an hour.
+* A lot of activities (about 9 over 12) take less than 2 hours in the whole day, this never changed from 2006 to 2016.
+* Personal care activities takes about 9 hours a day, which is the most time-consuming activity, followed by Leisure & sports and Working & work-related activities, which takes average 5.2 hours and 2.7 hours. Personal care activities contains sleeping, which is reasonable. Telephone calls & mail & e-mail is least time-consuming activities, which takes about 15 minutes per day, which is also reasonable according to our life experience.
+* No activities take 6-9 hours in a day, there seems to be a barrier.
+* There is no outlier through the timeline, since all the time series just fluctuated within a small range.
+* There is no gaps for the data. No missing data for certain time or certain activities.
+
+
+#### 2b)
+
+Since for time series in different subgroup,that is for different occupation, the data range is different, so some of the subgroup's trends can not be seen clearly, so we can try scaling the data.
+
+```{r}
+rownames(t11)<-t11[,1]
+t11<-t11[,2:ncol(t11)]
+t11_scale<-matrix(NA,nrow(t11),ncol(t11))
+for (i in 1:nrow(t11))
+{
+  t11_scale[i,] <- scale(as.numeric(t11[i,]))
+}
+rownames(t11_scale)<-rownames(t11)
+colnames(t11_scale)<-colnames(t11)
+t11_2<-melt(t11_scale)
+t11_2$Var2<-paste(substr(t11_2$Var2,6,100),as.numeric(substr(t11_2$Var2,4,4)) * 3,10,sep = "-")
+df2<-as.data.frame(t11_2)
+df2$Var2<-as.Date(df2$Var2,format = "%Y-%m-%d")
+colnames(df2)<-c("activities","variable","value")
+head(df2)
+```
+
+
+```{r fig.width = 10, fig.height = 5,warning=F,message=F}
+ggplot(df2, aes(variable, value, color = activities)) + 
+  geom_line() +
+  stat_smooth() +
+  xlab("Time") + 
+  ylab("hours") + 
+  ggtitle("Time spent(scaled) of the people engaging in different activityies per day over time")
+```
+
+It looks kind of messy with all subgroups in one plot. So we facet on activity.
+
+```{r fig.width = 10, fig.height = 5,warning=F,message=F}
+ggplot(df2, aes(variable, value)) + 
+  geom_line() +
+  stat_smooth() +
+  ggtitle("Time spent of the people engaging in different activities changing by time facet on activity") +
+  xlab("Time") + 
+  ylab("hours") + 
+  facet_wrap(~activities) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5))
+```
+
+Trend and other patterns besides question a mentioned: 
+
+* About Subgroup trends over time before scaling, we find that time spent in different activities changing little, time-consuming activities is still time consuming while one-hour activities still takes about a hour. 
+* About Subgroup trends over time after scaling, we can see the trend more detailed,time spent on "Personal care activities" and "Household activities" have a increasing trend over time, while time spent on "Eating and drinking" has a decreasing trend over time. Time spent on the activities like "Purchasing goods and services" decreased from 2006 to 2012,and then increased a little, time spent on the activities like "Leisure and sports" and "Other activities" first increased and then decreased.                          
+* Other patterns found: "Caring for and helping nonhousehold members" fluctuated severely over time, "Personal care activities" and "Telephone calls, mail, and e-mail" fluctuated in a relatively mild.
+
+#### 2c)
+
+
+According to following plot, not all the subgroups have cyclical trends. But we can see that cyclical trend pattern exists for "Educational activities", while other activities not. So we draw the plot with the subgroup data for "Educational activities" and facet on quarter.
+
+```{r fig.width = 10, fig.height = 5,warning=F,message=F}
+ggplot(df, aes(variable, value, color = activities)) + 
+  geom_line() +
+  xlab("Time") + 
+  ylab("hours") + 
+  ggtitle("Time spent of the people engaging in different activityies per day over time")
+```
+```{r fig.width = 10, fig.height = 5,warning=F,message=F}
+sub_df<-df[df$activities == "Educational activities",]
+sub_df$quarter[sub_df$quarter == 1] <- "1st quarter"
+sub_df$quarter[sub_df$quarter == 2] <- "2nd quarter"
+sub_df$quarter[sub_df$quarter == 3] <- "3rd quarter"
+sub_df$quarter[sub_df$quarter == 4] <- "4th quarter"
+ggplot(sub_df, aes(variable, value)) + 
+  geom_line() +
+  stat_smooth() +
+  ggtitle("Time spent of the people engaging in education activities changing by time facet on quarter") +
+  xlab("Time") + 
+  ylab("hours") + 
+  facet_wrap(~quarter) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 0.5, vjust = 0.5))
+```
+
+After facet on quarter, we can see more clearly there is cyclical trend in the subgroup data as time spent in education activities over time, for 2nd and 3rd quarter,espeically for 3rd quarter, the time spent in education activities is shorter than 1st and 4th quarter. It's reasonable since here 2nd quarter contains April, May and June,which contains a small part of summer holidays, 3rd quarter contains July,August and September, which contains a large part of summer holidays, so the education activities like go to school or have courses would not take place during summer holidays, which explain the cyclical trend pattern.
+
+
+#### 2d)
+
+Like I answered in question a:
+
+* No activities take 6-9 hours in a day, there seems to be a barrier.
+* There is no outlier through the timeline, since all the time series just fluctuated within a small range.
+* There is no gaps for the data. No missing data for certain time or certain activities.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
